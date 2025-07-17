@@ -293,8 +293,20 @@
         <div class="calculator">
             <div class="form-row">
                 <div class="form-group">
-                    <label for="capital">Capital de Mima Mi-aicha deja Investi (MAD):</label>
-                    <input type="number" id="capital" placeholder="Ex: 250000" min="1000" step="1000">
+                    <label for="property_type">Type d'Appartement:</label>
+                    <select id="property_type">
+                        <option value="custom">Personnalisé</option>
+                        <option value="economique" data-value="250000" data-rent="2500">Économique (250k MAD - 2500 MAD)</option>
+                        <option value="moyen" data-value="500000" data-rent="5000">Moyen (500k MAD - 5000 MAD)</option>
+                        <option value="haut_standing" data-value="1000000" data-rent="10000">Haut standing (1M MAD - 10k MAD)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="capital">Capital Investi (MAD):</label>
+                    <input type="number" id="capital" placeholder="Ex: 300000" min="1000" step="1000">
                 </div>
                 
                 <div class="form-group">
@@ -311,7 +323,16 @@
                         <option value="1year">1 an</option>
                         <option value="5years">5 ans</option>
                         <option value="10years">10 ans</option>
+                        <option value="15years">15 ans</option>
+                        <option value="20years">20 ans</option>
+                        <option value="25years">25 ans</option>
                         <option value="30years">30 ans</option>
+                        <option value="35years">35 ans</option>
+                        <option value="40years">40 ans</option>
+                        <option value="45years">45 ans</option>
+                        <option value="50years">50 ans</option>
+                        <option value="55years">55 ans</option>
+                        <option value="60years">60 ans</option>
                     </select>
                 </div>
                 
@@ -321,16 +342,16 @@
                 </div>
             </div>
             
-            <button onclick="calculate()">
+            <button id="calculate-btn">
                 <span class="icon">📈</span> Calculer le Rendement
             </button>
         </div>
         
         <div class="results" id="results">
             <div class="tabs">
-                <div class="tab active" onclick="switchTab('summary')">Résumé</div>
-                <div class="tab" onclick="switchTab('details')">Détails</div>
-                <div class="tab" onclick="switchTab('milestones')">Étapes Clés</div>
+                <div class="tab active" data-tab="summary">Résumé</div>
+                <div class="tab" data-tab="details">Détails</div>
+                <div class="tab" data-tab="milestones">Étapes Clés</div>
             </div>
             
             <div id="summary" class="tab-content active">
@@ -369,236 +390,282 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        let chart = null;
-        
-        // Gestion des onglets
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            let chart = null;
+            let milestones = []; // Déclaration de la variable milestones
+            
+            // Gestion du type de propriété
+            document.getElementById('property_type').addEventListener('change', function() {
+                if (this.value !== 'custom') {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const propertyValue = selectedOption.getAttribute('data-value');
+                    const propertyRent = selectedOption.getAttribute('data-rent');
+                    
+                    document.getElementById('capital').value = propertyValue;
+                    document.getElementById('monthly_rent').value = propertyRent;
+                }
             });
+            
+            // Permettre la modification manuelle même après sélection d'un type
+            document.getElementById('capital').addEventListener('input', function() {
+                document.getElementById('property_type').value = 'custom';
+            });
+            
+            document.getElementById('monthly_rent').addEventListener('input', function() {
+                document.getElementById('property_type').value = 'custom';
+            });
+            
+            // Gestion des onglets
             document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
             });
             
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-        
-        // Gestion du type de calcul
-        document.getElementById('calculation_type').addEventListener('change', function() {
-            const daysGroup = document.getElementById('days_group');
-            if (this.value === 'custom') {
-                daysGroup.style.display = 'block';
-                document.getElementById('days').value = '';
-            } else {
-                daysGroup.style.display = 'none';
-            }
-        });
-        
-        // Fonction principale de calcul
-        function calculate() {
-            const capitalInput = document.getElementById('capital').value;
-            const rentInput = document.getElementById('monthly_rent').value;
-            
-            // Validation des entrées
-            if (!capitalInput || !rentInput) {
-                alert("Veuillez saisir le capital et le loyer mensuel");
-                return;
+            function switchTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                document.getElementById(tabId).classList.add('active');
+                document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
             }
             
-            const initialCapital = parseFloat(capitalInput);
-            const monthlyRent = parseFloat(rentInput);
-            const calculationType = document.getElementById('calculation_type').value;
-            
-            // Déterminer le nombre de jours
-            let days;
-            switch(calculationType) {
-                case '1year': days = 365; break;
-                case '5years': days = 5 * 365; break;
-                case '10years': days = 10 * 365; break;
-                case '30years': days = 30 * 365; break;
-                default: days = parseInt(document.getElementById('days').value) || 365;
-            }
-            
-            // Calcul du rendement quotidien
-            const dailyReturnRate = (monthlyRent / 30) / initialCapital;
-            const annualReturnRate = dailyReturnRate * 365;
-            
-            // Variables de calcul
-            let currentCapital = initialCapital;
-            let totalReturn = 0;
-            let html = '';
-            let milestonesHtml = '';
-            const capitalData = [];
-            const labels = [];
-            
-            // Points d'étape (1 an, 5 ans, etc.)
-            const milestoneIntervals = [0, 365, 5*365, 10*365, 15*365, 20*365, 25*365, 30*365];
-            const milestones = [];
-            
-            // Simulation jour par jour
-            for (let day = 1; day <= days; day++) {
-                const dailyReturn = currentCapital * dailyReturnRate;
-                const newCapital = currentCapital + dailyReturn;
-                
-                // Enregistrement des données pour le graphique
-                if (day === 1 || day % 30 === 0 || day === days) {
-                    capitalData.push(currentCapital);
-                    labels.push(day === days ? `${days}j (${Math.floor(days/365)}a)` : `J${day}`);
-                }
-                
-                // Vérification des étapes clés
-                if (milestoneIntervals.includes(day)) {
-                    milestones.push({
-                        day: day,
-                        capital: currentCapital,
-                        dailyReturn: dailyReturn,
-                        years: Math.floor(day / 365)
-                    });
-                }
-                
-                // Ajout des données journalières (limité aux 365 premiers jours)
-                if (days <= 365 || day <= 365) {
-                    const isMilestone = day % 365 === 0;
-                    html += `
-                        <tr ${isMilestone ? 'class="highlight"' : ''}>
-                            <td>${day}</td>
-                            <td>${currentCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})}</td>
-                            <td class="positive">+${dailyReturn.toLocaleString('fr-FR', {minimumFractionDigits: 2})}</td>
-                            <td>${newCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})}</td>
-                        </tr>
-                    `;
-                }
-                
-                totalReturn += dailyReturn;
-                currentCapital = newCapital;
-            }
-            
-            // Génération du résumé
-            const totalYears = days / 365;
-            const finalCapital = currentCapital;
-            const totalGain = finalCapital - initialCapital;
-            const multiplier = finalCapital / initialCapital;
-            
-            const summaryHTML = `
-                <div class="summary-card">
-                    <h3>Investissement Initial</h3>
-                    <p>${initialCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Capital Final</h3>
-                    <p class="highlight">${finalCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Gains Totaux</h3>
-                    <p class="positive">+${totalGain.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Multiplicateur</h3>
-                    <p>${multiplier.toFixed(2)}x</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Rendement Quotidien</h3>
-                    <p>${(dailyReturnRate * 100).toFixed(4)}%</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Rendement Annuel</h3>
-                    <p>${(annualReturnRate * 100).toFixed(2)}%</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Durée</h3>
-                    <p>${days} jours (${totalYears.toFixed(1)} ans)</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Gain Moyen/Jour</h3>
-                    <p>${(totalGain / days).toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
-                </div>
-            `;
-            
-            // Génération des étapes clés
-            milestones.forEach(ms => {
-                if (ms.day <= days) {
-                    milestonesHtml += `
-                        <div class="milestone">
-                            <h3>Après ${ms.years} an${ms.years > 1 ? 's' : ''} (${ms.day} jours)</h3>
-                            <p><strong>Capital:</strong> ${ms.capital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
-                            <p><strong>Gain quotidien:</strong> <span class="positive">${ms.dailyReturn.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</span></p>
-                            <p><strong>Gain annuel:</strong> <span class="positive">${(ms.dailyReturn * 365).toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</span></p>
-                        </div>
-                    `;
+            // Gestion du type de calcul
+            document.getElementById('calculation_type').addEventListener('change', function() {
+                const daysGroup = document.getElementById('days_group');
+                if (this.value === 'custom') {
+                    daysGroup.style.display = 'block';
+                    document.getElementById('days').value = '';
+                } else {
+                    daysGroup.style.display = 'none';
                 }
             });
             
-            // Mise à jour de l'interface
-            document.getElementById('summary-content').innerHTML = summaryHTML;
-            document.getElementById('results-body').innerHTML = html;
-            document.getElementById('milestones-content').innerHTML = milestonesHtml;
-            document.getElementById('results').style.display = 'block';
+            // Bouton de calcul
+            document.getElementById('calculate-btn').addEventListener('click', calculate);
+            
+            // Fonction principale de calcul
+            function calculate() {
+                const capitalInput = document.getElementById('capital').value;
+                const rentInput = document.getElementById('monthly_rent').value;
+                
+                // Validation des entrées
+                if (!capitalInput || !rentInput) {
+                    alert("Veuillez saisir le capital et le loyer mensuel");
+                    return;
+                }
+                
+                const initialCapital = parseFloat(capitalInput);
+                const monthlyRent = parseFloat(rentInput);
+                const calculationType = document.getElementById('calculation_type').value;
+                
+                // Déterminer le nombre de jours
+                let days;
+                switch(calculationType) {
+                    case '1year': days = 365; break;
+                    case '5years': days = 5 * 365; break;
+                    case '10years': days = 10 * 365; break;
+                    case '15years': days = 15 * 365; break;
+                    case '20years': days = 20 * 365; break;
+                    case '25years': days = 25 * 365; break;
+                    case '30years': days = 30 * 365; break;
+                    case '35years': days = 35 * 365; break;
+                    case '40years': days = 40 * 365; break;
+                    case '45years': days = 45 * 365; break;
+                    case '50years': days = 50 * 365; break;
+                    case '55years': days = 55 * 365; break;
+                    case '60years': days = 60 * 365; break;
+                    default: days = parseInt(document.getElementById('days').value) || 365;
+                }
+                
+                // Calcul du rendement quotidien (basé sur le loyer mensuel)
+                const dailyReturn = monthlyRent / 30; // Gain quotidien fixe basé sur le loyer
+                const dailyReturnRate = dailyReturn / initialCapital;
+                const annualReturnRate = dailyReturnRate * 365;
+                
+                // Variables de calcul
+                let currentCapital = initialCapital;
+                let totalReturn = 0;
+                let html = '';
+                let milestonesHtml = '';
+                const capitalData = [];
+                const labels = [];
+                milestones = []; // Réinitialisation des milestones
+                
+                // Points d'étape (tous les 5 ans jusqu'à 60 ans)
+                const milestoneIntervals = [];
+                for (let y = 0; y <= 60; y += 5) {
+                    milestoneIntervals.push(y * 365);
+                }
+                
+                // Simulation jour par jour
+                for (let day = 1; day <= days; day++) {
+                    const newCapital = currentCapital + dailyReturn;
+                    
+                    // Enregistrement des données pour le graphique
+                    if (day === 1 || day % 30 === 0 || day === days) {
+                        capitalData.push(currentCapital);
+                        labels.push(day === days ? `${days}j (${Math.floor(days/365)}a)` : `J${day}`);
+                    }
+                    
+                    // Vérification des étapes clés
+                    if (milestoneIntervals.includes(day)) {
+                        milestones.push({
+                            day: day,
+                            capital: currentCapital,
+                            dailyReturn: dailyReturn,
+                            years: Math.floor(day / 365)
+                        });
+                    }
+                    
+                    // Ajout des données journalières (limité aux 365 premiers jours)
+                    if (days <= 365 || day <= 365) {
+                        const isMilestone = day % 365 === 0;
+                        html += `
+                            <tr ${isMilestone ? 'class="highlight"' : ''}>
+                                <td>${day}</td>
+                                <td>${currentCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})}</td>
+                                <td class="positive">+${dailyReturn.toLocaleString('fr-FR', {minimumFractionDigits: 2})}</td>
+                                <td>${newCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})}</td>
+                            </tr>
+                        `;
+                    }
+                    
+                    totalReturn += dailyReturn;
+                    currentCapital = newCapital;
+                }
+                
+                // Génération du résumé
+                const totalYears = days / 365;
+                const finalCapital = currentCapital;
+                const totalGain = finalCapital - initialCapital;
+                const multiplier = finalCapital / initialCapital;
+                
+                const summaryHTML = `
+                    <div class="summary-card">
+                        <h3>Investissement Initial</h3>
+                        <p>${initialCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Capital Final</h3>
+                        <p class="highlight">${finalCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Gains Totaux</h3>
+                        <p class="positive">+${totalGain.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Multiplicateur</h3>
+                        <p>${multiplier.toFixed(2)}x</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Rendement Quotidien</h3>
+                        <p>${(dailyReturnRate * 100).toFixed(4)}%</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Rendement Annuel</h3>
+                        <p>${(annualReturnRate * 100).toFixed(2)}%</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Durée</h3>
+                        <p>${days} jours (${totalYears.toFixed(1)} ans)</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Gain Moyen/Jour</h3>
+                        <p>${(totalGain / days).toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
+                    </div>
+                `;
+                
+                // Génération des étapes clés
+                milestones.forEach(ms => {
+                    if (ms.day <= days) {
+                        milestonesHtml += `
+                            <div class="milestone">
+                                <h3>Après ${ms.years} an${ms.years > 1 ? 's' : ''} (${ms.day} jours)</h3>
+                                <p><strong>Capital:</strong> ${ms.capital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
+                                <p><strong>Gain quotidien:</strong> <span class="positive">${ms.dailyReturn.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</span></p>
+                                <p><strong>Gain annuel:</strong> <span class="positive">${(ms.dailyReturn * 365).toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</span></p>
+                            </div>
+                        `;
+                    }
+                });
+                
+                // Mise à jour de l'interface
+                document.getElementById('summary-content').innerHTML = summaryHTML;
+                document.getElementById('results-body').innerHTML = html;
+                document.getElementById('milestones-content').innerHTML = milestonesHtml;
+                document.getElementById('results').style.display = 'block';
+                
+                // Création du graphique
+                createChart(labels, capitalData, days);
+                
+                // Défilement vers les résultats
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            }
             
             // Création du graphique
-            createChart(labels, capitalData, days);
-            
-            // Défilement vers les résultats
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        // Création du graphique
-        function createChart(labels, data, days) {
-            const ctx = document.getElementById('chart').getContext('2d');
-            
-            if (chart) chart.destroy();
-            
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: `Évolution sur ${days} jours (${Math.floor(days/365)} ans)`,
-                        data: data,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.1,
-                        fill: true,
-                        pointBackgroundColor: '#2ecc71',
-                        pointRadius: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': ' + context.parsed.y.toLocaleString('fr-FR') + ' MAD';
-                                }
-                            }
-                        },
-                        legend: {
-                            position: 'top',
-                        }
+            function createChart(labels, data, days) {
+                const ctx = document.getElementById('chart').getContext('2d');
+                
+                if (chart) chart.destroy();
+                
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `Évolution sur ${days} jours (${Math.floor(days/365)} ans)`,
+                            data: data,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.1,
+                            fill: true,
+                            pointBackgroundColor: '#2ecc71',
+                            pointRadius: 3
+                        }]
                     },
-                    scales: {
-                        y: {
-                            ticks: {
-                                callback: function(value) {
-                                    return value.toLocaleString('fr-FR') + ' MAD';
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.parsed.y.toLocaleString('fr-FR') + ' MAD';
+                                    }
                                 }
                             },
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)'
+                            legend: {
+                                position: 'top',
                             }
                         },
-                        x: {
-                            grid: {
-                                display: false
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(value) {
+                                        return value.toLocaleString('fr-FR') + ' MAD';
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
                             }
                         }
                     }
-                }
-            });
-        }
+                });
+            }
+        });
     </script>
 </body>
 </html>
