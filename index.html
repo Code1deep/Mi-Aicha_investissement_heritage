@@ -311,16 +311,7 @@
                         <option value="1year">1 an</option>
                         <option value="5years">5 ans</option>
                         <option value="10years">10 ans</option>
-                        <option value="15years">15 ans</option>
-                        <option value="20years">20 ans</option>
-                        <option value="25years">25 ans</option>
                         <option value="30years">30 ans</option>
-                        <option value="35years">35 ans</option>
-                        <option value="40years">40 ans</option>
-                        <option value="45years">45 ans</option>
-                        <option value="50years">50 ans</option>
-                        <option value="55years">55 ans</option>
-                        <option value="60years">60 ans</option>
                     </select>
                 </div>
                 
@@ -425,16 +416,7 @@
                 case '1year': days = 365; break;
                 case '5years': days = 5 * 365; break;
                 case '10years': days = 10 * 365; break;
-                case '15years': days = 15 * 365; break;
-                case '20years': days = 20 * 365; break;
-                case '25years': days = 25 * 365; break;
                 case '30years': days = 30 * 365; break;
-                case '35years': days = 35 * 365; break;
-                case '40years': days = 40 * 365; break;
-                case '45years': days = 45 * 365; break;
-                case '50years': days = 50 * 365; break;
-                case '55years': days = 55 * 365; break;
-                case '60years': days = 60 * 365; break;
                 default: days = parseInt(document.getElementById('days').value) || 365;
             }
             
@@ -450,11 +432,9 @@
             const capitalData = [];
             const labels = [];
             
-            // Points d'étape (tous les 5 ans jusqu'à 60 ans)
-            const milestoneIntervals = [];
-            for (let y = 0; y <= 60; y += 5) {
-                milestoneIntervals.push(y * 365);
-            }
+            // Points d'étape (1 an, 5 ans, etc.)
+            const milestoneIntervals = [0, 365, 5*365, 10*365, 15*365, 20*365, 25*365, 30*365];
+            const milestones = [];
             
             // Simulation jour par jour
             for (let day = 1; day <= days; day++) {
