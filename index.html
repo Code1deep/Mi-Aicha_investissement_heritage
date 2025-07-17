@@ -3,8 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur de Rendement Immobilier</title>
+    <title>Calculateur de Rendement de l'Héritage de Mima Mi-aicha</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        /* Titre 1 - Bleu */
+        .title-blue {
+            color: #3498db;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        /* Titre 2 - Rouge */
+        .title-red {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            border-left: 5px solid #e74c3c;
+            padding-left: 15px;
+        }
+        
+        /* Titre 3 - Vert */
+        .title-green {
+            color: #800476;
+            text-align: right;
+            margin-bottom: 30px;
+            font-size: 1.6rem;
+            border-right: 5px solid #2ecc71;
+            padding-right: 15px;
+            direction: rtl;
+            font-family: 'Arial Arabic', Arial, sans-serif;
+        }
+        
+        .content-box {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .title-blue, .title-red, .title-green {
+                font-size: 1.4rem;
+                text-align: center;
+                border: none;
+                padding: 0;
+            }
+        }
+
         :root {
             --primary: #3498db;
             --secondary: #2ecc71;
@@ -195,13 +253,21 @@
             }
         }
     </style>
+
 </head>
 <body>
-    <div class="container">
-        <h1>Calculateur de Rendement de l'Heritage de Mima Mi-aicha deja Investi </h1>
-        <h1>Mima Mi-aicha deja Investi la totalitée de son heritage pour notre bien-etre </h1>
-        <h1>الشريفة مي عائشة الحنونة كنز لا يقدر بثمن، ووالدتنا المحبوبة في السماء، بتضحيتها المطلقة، قد جسّدت جوهر الحب الأمومي. لقد تصرفت وفقًا للمثل الذي يقول: "من يزرع الحب يحصد الحنان." لقد زرعت كل ميراثها، ليس لنفسها، بل لأولاد السي المعطي، حتى ننعموا بثروات مادية متنوعة. وبدون أدنى قدر من الأنانية، لم تحتفظ بشيء لراحتها الخاصة، ولا حتى بقطعة حلوى بسيطة لجوعها، ولا بزوج من الجوارب أو سترة لتحميها من لسعات برد الشتاء. إيثارها درسٌ في الحياة محفورٌ في قلوب الحامدين الشاكرين الطائعين، يبرهن أن "قلب الأم هو هوةٌ في قاعها دائمًا التضحية." ولكن أبعد من التضحية، يوجد فيه أيضًا حب لا ينتهي وعطاء يتجاوز كل مقياس. كيف لا نشهد لها بالامتنان الأبدي على مثل هذا الفعل، وهي التي جعلت رفاهيتنا ثروتها الوحيدة؟ </h1>
-        
+    <div class="content-box">
+        <h1 class="title-blue">Calculateur de Rendement de l'Heritage de Mima Mi-aicha déjà Investi</h1>
+    </div>
+    
+    <div class="content-box">
+        <h1 class="title-red">Mima Mi-aicha déjà Investi la totalité de son heritage pour notre bien-être</h1>
+    </div>
+    
+    <div class="content-box">
+        <h1 class="title-green">الشريفة مي عائشة الحنونة كنز لا يقدر بثمن، ووالدتنا المحبوبة في السماء، بتضحيتها المطلقة، قد جسّدت جوهر الحب الأمومي. لقد تصرفت وفقًا للمثل الذي يقول: "من يزرع الحب يحصد الحنان." لقد زرعت كل ميراثها، ليس لنفسها، بل لأولاد السي المعطي، حتى ننعموا بثروات مادية متنوعة. وبدون أدنى قدر من الأنانية، لم تحتفظ بشيء لراحتها الخاصة، ولا حتى بقطعة حلوى بسيطة لجوعها، ولا بزوج من الجوارب أو سترة لتحميها من لسعات برد الشتاء. إيثارها درسٌ في الحياة محفورٌ في قلوب الحامدين الشاكرين الطائعين، يبرهن أن "قلب الأم هو هوةٌ في قاعها دائمًا التضحية." ولكن أبعد من التضحية، يوجد فيه أيضًا حب لا ينتهي وعطاء يتجاوز كل مقياس. كيف لا نشهد لها بالامتنان الأبدي على مثل هذا الفعل، وهي التي جعلت رفاهيتنا ثروتها الوحيدة؟</h1>
+    </div>
+
         <div class="calculator">
             <div class="form-row">
                 <div class="form-group">
@@ -262,9 +328,9 @@
                         <thead>
                             <tr>
                                 <th>Jour</th>
-                                <th>Capital (€)</th>
-                                <th>Gain Quotidien (€)</th>
-                                <th>Nouveau Capital (€)</th>
+                                <th>Capital (MAD)</th>
+                                <th>Gain Quotidien (MAD)</th>
+                                <th>Nouveau Capital (MAD)</th>
                             </tr>
                         </thead>
                         <tbody id="results-body"></tbody>
@@ -395,15 +461,15 @@
             const summaryHTML = `
                 <div class="summary-card">
                     <h3>Investissement Initial</h3>
-                    <p>${initialCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} €</p>
+                    <p>${initialCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
                 </div>
                 <div class="summary-card">
                     <h3>Capital Final</h3>
-                    <p class="highlight">${finalCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} €</p>
+                    <p class="highlight">${finalCapital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
                 </div>
                 <div class="summary-card">
                     <h3>Gains Totaux</h3>
-                    <p class="positive">+${totalGain.toLocaleString('fr-FR', {minimumFractionDigits: 2})} €</p>
+                    <p class="positive">+${totalGain.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
                 </div>
                 <div class="summary-card">
                     <h3>Multiplicateur</h3>
@@ -423,7 +489,7 @@
                 </div>
                 <div class="summary-card">
                     <h3>Gain Moyen/Jour</h3>
-                    <p>${(totalGain / days).toLocaleString('fr-FR', {minimumFractionDigits: 2})} €</p>
+                    <p>${(totalGain / days).toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
                 </div>
             `;
             
@@ -433,9 +499,9 @@
                     milestonesHtml += `
                         <div class="milestone">
                             <h3>Après ${ms.years} an${ms.years > 1 ? 's' : ''} (${ms.day} jours)</h3>
-                            <p><strong>Capital:</strong> ${ms.capital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} €</p>
-                            <p><strong>Gain quotidien:</strong> <span class="positive">${ms.dailyReturn.toLocaleString('fr-FR', {minimumFractionDigits: 2})} €</span></p>
-                            <p><strong>Gain annuel:</strong> <span class="positive">${(ms.dailyReturn * 365).toLocaleString('fr-FR', {minimumFractionDigits: 2})} €</span></p>
+                            <p><strong>Capital:</strong> ${ms.capital.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</p>
+                            <p><strong>Gain quotidien:</strong> <span class="positive">${ms.dailyReturn.toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</span></p>
+                            <p><strong>Gain annuel:</strong> <span class="positive">${(ms.dailyReturn * 365).toLocaleString('fr-FR', {minimumFractionDigits: 2})} MAD</span></p>
                         </div>
                     `;
                 }
@@ -483,7 +549,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return context.dataset.label + ': ' + context.parsed.y.toLocaleString('fr-FR') + ' €';
+                                    return context.dataset.label + ': ' + context.parsed.y.toLocaleString('fr-FR') + ' MAD';
                                 }
                             }
                         },
@@ -495,7 +561,7 @@
                         y: {
                             ticks: {
                                 callback: function(value) {
-                                    return value.toLocaleString('fr-FR') + ' €';
+                                    return value.toLocaleString('fr-FR') + ' MAD';
                                 }
                             },
                             grid: {
